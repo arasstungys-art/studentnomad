@@ -1,0 +1,49 @@
+---
+layout: layouts/base.njk
+---
+<header class="page-hero tall" {% if cover %}style="background-image:url('{{ cover | url }}')"{% endif %}>
+  <div class="hero-shade"></div>
+  <div class="wrap page-hero-inner">
+    <div class="big-flag">{{ code | flag }}</div>
+    <h1>{{ name }}</h1>
+    <div class="meta light">{{ continent }}</div>
+  </div>
+</header>
+
+<section class="wrap country-facts">
+  {% if rating %}
+  <div class="fact">
+    <div class="caps">My rating</div>
+    <div class="stars" aria-label="{{ rating }} out of 5">
+      {% for i in range(1, 6) %}<svg viewBox="0 0 24 24" class="{% if i <= rating %}on{% endif %}"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z"/></svg>{% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  {% if cities and cities.length %}
+  <div class="fact">
+    <div class="caps">Cities visited</div>
+    <ul class="cities">{% for city in cities %}<li>{{ city }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  {% if visited_on %}
+  <div class="fact">
+    <div class="caps">First visit</div>
+    <div class="fact-value">{{ visited_on | readableDate }}</div>
+  </div>
+  {% endif %}
+</section>
+
+{% if content | trim %}
+<div class="wrap narrow prose">{{ content | safe }}</div>
+{% endif %}
+
+{% set related = collections.stories | byCountry(code) %}
+<section class="section wrap">
+  <div class="script kicker">from {{ name }}</div>
+  <h2>Stories</h2>
+  {% if related | length %}
+    <div class="story-grid">{% for story in related %}{% include "partials/story-card.njk" %}{% endfor %}</div>
+  {% else %}
+    <div class="empty">No stories from {{ name }} yet — they're coming.</div>
+  {% endif %}
+</section>

@@ -1,0 +1,31 @@
+---
+layout: layouts/base.njk
+---
+<article>
+  <header class="page-hero" {% if cover %}style="background-image:url('{{ cover | url }}')"{% endif %}>
+    <div class="hero-shade"></div>
+    <div class="wrap narrow page-hero-inner">
+      {% if country %}<a class="pill pill-light" href="/countries/{{ country }}/">{{ country | flag }} {{ country | countryName(world) }}</a>{% endif %}
+      <h1>{{ title }}</h1>
+      <div class="meta light">{{ page.date | readableDate }} · {{ content | readingTime }}</div>
+    </div>
+  </header>
+
+  <div class="wrap narrow prose">
+    {% if excerpt %}<p class="lede">{{ excerpt }}</p>{% endif %}
+    {{ content | safe }}
+  </div>
+
+  {% if tags and tags.length %}
+  <div class="wrap narrow tags">
+    {% for t in tags %}<span class="tag">#{{ t }}</span>{% endfor %}
+  </div>
+  {% endif %}
+
+  <nav class="wrap narrow post-nav">
+    {% set prev = collections.stories | getPreviousCollectionItem(page) %}
+    {% set next = collections.stories | getNextCollectionItem(page) %}
+    {% if next %}<a href="{{ next.url }}"><span class="script">older</span>{{ next.data.title }}</a>{% else %}<span></span>{% endif %}
+    {% if prev %}<a class="right" href="{{ prev.url }}"><span class="script">newer</span>{{ prev.data.title }}</a>{% endif %}
+  </nav>
+</article>

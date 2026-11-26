@@ -1,0 +1,21 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>{{ site.title }}</title>
+    <description>{{ site.description }}</description>
+    <link>{{ '/' | url }}</link>
+    {% for p in collections.stories | limit(20) %}
+    <item>
+      <title>{{ p.data.title }}</title>
+      <link>{{ p.url | url }}</link>
+      <guid>{{ p.url | url }}</guid>
+      <pubDate>{{ p.date.toUTCString() }}</pubDate>
+      <description>{{ p.data.excerpt }}</description>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

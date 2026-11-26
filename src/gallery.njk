@@ -1,0 +1,25 @@
+---
+layout: layouts/base.njk
+title: Gallery
+permalink: /gallery/
+---
+{% set items = gallery.photos | galleryItems(collections.stories, collections.visited) %}
+<section class="section wrap page-top">
+  <div class="script kicker">snapshots</div>
+  <h1 class="page-title">Gallery</h1>
+  <p class="lead">Moments from the road.</p>
+  {% if items | length %}
+    <div class="gallery">
+      {% for it in items %}
+        <figure>
+          {% if it.link %}<a href="{{ it.link }}">{% endif %}
+          <img src="{{ it.image }}" alt="{{ it.caption }}" loading="lazy" onerror="this.closest('figure').remove()">
+          {% if it.link %}</a>{% endif %}
+          {% if it.caption %}<figcaption>{{ it.caption }}</figcaption>{% endif %}
+        </figure>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">No photos yet — the camera roll is filling up.</div>
+  {% endif %}
+</section>

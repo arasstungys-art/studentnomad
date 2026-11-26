@@ -1,0 +1,4 @@
+{
+  "layout": "layouts/country.njk",
+  "permalink": "/countries/{{ code | lower }}/"
+}

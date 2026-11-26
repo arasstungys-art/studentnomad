@@ -1,0 +1,39 @@
+---
+layout: layouts/base.njk
+title: Stories
+permalink: /stories/
+---
+<section class="section wrap page-top">
+  <div class="script kicker">the travel journal</div>
+  <h1 class="page-title">All stories</h1>
+  <p class="lead">Every trip, every bus ride, every plate of street food — written down so I never forget.</p>
+
+  {% if collections.stories | length %}
+    {% set used = [] %}
+    {% for s in collections.stories %}{% if s.data.country and not (s.data.country in used) %}{% set used = (used.push(s.data.country), used) %}{% endif %}{% endfor %}
+    {% if used | length > 1 %}
+      <div class="chips" id="story-filter">
+        <button class="chip active" data-c="">All</button>
+        {% for code in used %}<button class="chip" data-c="{{ code }}">{{ code | flag }} {{ code | countryName(world) }}</button>{% endfor %}
+      </div>
+    {% endif %}
+    <div class="story-grid">
+      {% for story in collections.stories %}
+        <div class="story-wrap" data-country="{{ story.data.country }}">{% include "partials/story-card.njk" %}</div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">The first story is still being written. Check back soon!</div>
+  {% endif %}
+</section>
+<script>
+  document.querySelectorAll('#story-filter .chip').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('#story-filter .chip').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      document.querySelectorAll('.story-wrap').forEach(function (w) {
+        w.style.display = !b.dataset.c || w.dataset.country === b.dataset.c ? '' : 'none';
+      });
+    });
+  });
+</script>

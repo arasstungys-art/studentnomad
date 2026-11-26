@@ -1,0 +1,42 @@
+---
+layout: layouts/base.njk
+title: Countries
+permalink: /countries/
+---
+{% set visitedCodes = collections.visited | visitedCodes %}
+<section class="section wrap page-top">
+  <div class="script kicker">passport stamps</div>
+  <h1 class="page-title">All {{ world | length }} countries</h1>
+  <p class="lead">{{ visitedCodes | length }} of {{ world | length }} so far. The orange ones have a story to tell.</p>
+
+  <div class="progress"><div style="width: {{ (visitedCodes | length) / (world | length) * 100 }}%"></div></div>
+
+  <input class="search" id="country-search" type="search" placeholder="Search a country…" aria-label="Search a country">
+
+  {% for group in world | groupByContinent %}
+    <div class="continent">
+      <h3>{{ group.name }}</h3>
+      <div class="country-list">
+        {% for c in group.countries %}
+          {% if c.code in visitedCodes %}
+            <a class="cl-item visited" href="/countries/{{ c.code }}/" data-name="{{ c.name | lower }}"><span>{{ c.code | flag }}</span>{{ c.name }}</a>
+          {% else %}
+            <span class="cl-item" data-name="{{ c.name | lower }}"><span>{{ c.code | flag }}</span>{{ c.name }}</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</section>
+<script>
+  document.getElementById('country-search').addEventListener('input', function (e) {
+    var q = e.target.value.trim().toLowerCase();
+    document.querySelectorAll('.cl-item').forEach(function (el) {
+      el.style.display = !q || el.dataset.name.indexOf(q) > -1 ? '' : 'none';
+    });
+    document.querySelectorAll('.continent').forEach(function (g) {
+      var any = [].some.call(g.querySelectorAll('.cl-item'), function (el) { return el.style.display !== 'none'; });
+      g.style.display = any ? '' : 'none';
+    });
+  });
+</script>

@@ -1,0 +1,6 @@
+<a class="country-card" href="{{ c.url }}" {% if c.data.cover %}style="background-image:url('{{ c.data.cover | url }}')"{% endif %}>
+  <div class="country-card-inner">
+    <span class="flag">{{ c.data.code | flag }}</span>
+    <span class="name">{{ c.data.name }}</span>
+  </div>
+</a>

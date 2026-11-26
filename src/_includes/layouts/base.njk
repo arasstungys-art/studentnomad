@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-base="{{ '/' | url }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if title %}{{ title }} — {{ site.title }}{% else %}{{ site.title }} — a student's travel journal{% endif %}</title>
+  <meta name="description" content="{{ excerpt or site.description }}">
+  <meta property="og:title" content="{{ title or site.title }}">
+  <meta property="og:description" content="{{ excerpt or site.description }}">
+  {% if cover %}<meta property="og:image" content="{{ cover }}">{% endif %}
+  <link rel="stylesheet" href="/assets/vendor/fonts/fraunces/index.css">
+  <link rel="stylesheet" href="/assets/vendor/fonts/karla/400.css">
+  <link rel="stylesheet" href="/assets/vendor/fonts/karla/500.css">
+  <link rel="stylesheet" href="/assets/vendor/fonts/karla/600.css">
+  <link rel="stylesheet" href="/assets/vendor/fonts/karla/700.css">
+  <link rel="stylesheet" href="/assets/vendor/fonts/caveat/500.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/feed.xml">
+  {% block head %}{% endblock %}
+</head>
+<body class="{{ bodyClass }}">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="logo" href="/">student<span>nomad</span></a>
+      <button class="menu-toggle" aria-label="Menu" aria-expanded="false" onclick="document.body.classList.toggle('nav-open');this.setAttribute('aria-expanded',document.body.classList.contains('nav-open'))">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <nav class="main-nav">
+        {% set nav = [["/", "Home"], ["/stories/", "Stories"], ["/countries/", "Countries"], ["/map/", "Map"], ["/gallery/", "Gallery"], ["/about/", "About"]] %}
+        {% for item in nav %}
+          <a href="{{ item[0] }}" {% if page.url == item[0] or (item[0] != '/' and page.url.startsWith(item[0])) %}class="active" aria-current="page"{% endif %}>{{ item[1] }}</a>
+        {% endfor %}
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    {{ content | safe }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-title">{{ site.title }}</div>
+      <div class="script footer-tag">{{ site.footer_tagline }}</div>
+      <div class="footer-links">
+        <a href="/about/#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

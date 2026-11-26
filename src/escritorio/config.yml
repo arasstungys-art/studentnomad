@@ -1,0 +1,101 @@
+# Panel de administración (Sveltia CMS)
+# Cada vez que guardas, se hace un commit en GitHub y el sitio se vuelve a publicar solo (1–2 min).
+backend:
+  name: github
+  repo: arasstungys-art/studentnomad
+  branch: main
+  commit_messages:
+    create: "New {{collection}}: {{slug}}"
+    update: "Update {{collection}}: {{slug}}"
+    delete: "Delete {{collection}}: {{slug}}"
+    uploadMedia: "Upload {{path}}"
+    deleteMedia: "Delete {{path}}"
+
+media_folder: src/uploads
+public_folder: /uploads
+site_url: https://arasstungys-art.github.io/studentnomad/
+
+collections:
+  - name: stories
+    label: Stories
+    label_singular: Story
+    description: Blog posts. Each one appears on the home page, in /stories and on its country page.
+    folder: src/posts
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} — {{date | date('YYYY-MM-DD')}}"
+    sortable_fields: [date, title]
+    view_filters:
+      - { label: Drafts, field: draft, pattern: true }
+    preview_path: "stories/{{slug}}/"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime, time_format: false, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD" }
+      - label: Country
+        name: country
+        widget: relation
+        collection: countries
+        value_field: code
+        search_fields: [name, code]
+        display_fields: [name]
+        required: false
+        hint: "Add the country first under Countries if it isn't in the list."
+      - { label: Cover image, name: cover, widget: image, required: false }
+      - { label: Excerpt, name: excerpt, widget: text, required: false, hint: "One or two sentences shown on the cards." }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Draft (hidden), name: draft, widget: boolean, default: false, required: false }
+      - { label: Story, name: body, widget: markdown }
+
+  - name: countries
+    label: Countries
+    label_singular: Country
+    description: Countries you've visited. They turn orange on the map and get their own page.
+    folder: src/countries
+    create: true
+    slug: "{{code}}"
+    identifier_field: name
+    summary: "{{name}}"
+    fields:
+      - { label: Name, name: name, widget: string }
+      - { label: "ISO code (2 letters, e.g. cl, pe, ar)", name: code, widget: string, pattern: ["^[a-z]{2}$", "Two lowercase letters, e.g. cl"] }
+      - label: Continent
+        name: continent
+        widget: select
+        options: [Africa, Asia, Europe, North America, Oceania, South America]
+      - { label: Cover photo, name: cover, widget: image, required: false }
+      - { label: "My rating (1–5)", name: rating, widget: number, value_type: int, min: 1, max: 5, required: false }
+      - { label: Cities visited, name: cities, widget: list, required: false }
+      - { label: First visit, name: visited_on, widget: datetime, time_format: false, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD", required: false }
+      - { label: Featured on home page, name: featured, widget: boolean, default: false, required: false }
+      - { label: Notes about this country, name: body, widget: markdown, required: false }
+
+  - name: settings
+    label: Site settings
+    files:
+      - name: site
+        label: Home & About texts
+        file: src/_data/site.json
+        fields:
+          - { label: Site title, name: title, widget: string }
+          - { label: SEO description, name: description, widget: text }
+          - { label: Hero handwritten line, name: hero_kicker, widget: string }
+          - { label: Hero text, name: hero_text, widget: text }
+          - { label: Hero image, name: hero_image, widget: image, required: false }
+          - { label: Footer tagline, name: footer_tagline, widget: string }
+          - { label: About — handwritten line, name: about_kicker, widget: string }
+          - { label: About — title, name: about_title, widget: string }
+          - { label: About — text, name: about_text, widget: text, hint: "Leave a blank line between paragraphs." }
+          - { label: About — photo, name: about_image, widget: image, required: false }
+          - { label: Contact email, name: contact_email, widget: string, required: false }
+          - { label: Formspree form ID (optional), name: formspree_id, widget: string, required: false, hint: "If set, the contact form sends messages through formspree.io instead of opening the visitor's email app." }
+      - name: gallery
+        label: Gallery
+        file: src/_data/gallery.json
+        fields:
+          - label: Photos
+            name: photos
+            widget: list
+            summary: "{{fields.caption}}"
+            fields:
+              - { label: Photo, name: image, widget: image }
+              - { label: Caption, name: caption, widget: string, required: false }

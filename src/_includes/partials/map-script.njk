@@ -1,0 +1,7 @@
+<link rel="stylesheet" href="/assets/vendor/jsvectormap/jsvectormap.min.css">
+<script src="/assets/vendor/jsvectormap/jsvectormap.min.js"></script>
+<script src="/assets/vendor/jsvectormap/world.js"></script>
+<script>
+  window.VISITED = {{ collections.visited | visitedCodes | json | safe }};
+</script>
+<script src="/assets/js/map.js"></script>
