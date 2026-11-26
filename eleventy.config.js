@@ -7,7 +7,9 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/uploads": "uploads" });
-  eleventyConfig.addPassthroughCopy({ "src/escritorio/config.yml": "escritorio/config.yml" });
+  // The writer's desk is a static app: copied as-is, not processed as templates.
+  eleventyConfig.addPassthroughCopy({ "src/escritorio": "escritorio" });
+  eleventyConfig.ignores.add("src/escritorio/**");
   // Self-hosted libraries & fonts (no external CDNs needed)
   eleventyConfig.addPassthroughCopy({
     "node_modules/jsvectormap/dist/jsvectormap.min.js": "assets/vendor/jsvectormap/jsvectormap.min.js",
