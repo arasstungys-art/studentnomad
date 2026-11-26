@@ -107,3 +107,8 @@ button.country-card { border: 0; cursor: pointer; font: inherit; text-align: lef
 @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
 .desk-footer { margin-top: 40px; padding: 32px 0; }
 .desk-footer .footer-links { align-items: center; margin-top: 10px; }
+.login-switch { margin-top: 18px; text-decoration: underline; text-underline-offset: 3px; }
+.stack-form { flex-direction: column; max-width: 420px; }
+.stack-form input { flex: none; }
+.stack-form .btn { align-self: flex-start; }
+.setpass-title { font-size: clamp(44px, 8vw, 96px); }

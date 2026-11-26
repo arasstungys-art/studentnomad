@@ -24,12 +24,37 @@
   <div class="wrap hero-inner">
     <div class="script hero-kicker">el escritorio de</div>
     <h1 class="hero-title">studentnomad</h1>
-    <p class="hero-text">Pega tu llave de acceso una sola vez. Este navegador la recordará.</p>
-    <form id="login-form" class="login-form">
-      <input id="login-token" type="password" autocomplete="current-password" placeholder="github_pat_…" aria-label="Llave de acceso" required>
+    <form id="pass-form" class="login-form" hidden>
+      <input id="login-pass" type="password" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña" required>
       <button class="btn" type="submit">Entrar</button>
     </form>
+    <div id="token-box" hidden>
+      <p class="hero-text">Primera vez: pega la llave de GitHub para crear tu contraseña.</p>
+      <form id="login-form" class="login-form">
+        <input id="login-token" type="password" autocomplete="off" placeholder="github_pat_…" aria-label="Llave de acceso" required>
+        <button class="btn" type="submit">Continuar</button>
+      </form>
+    </div>
+    <button class="link-btn light login-switch" id="use-token" hidden>Entrar con la llave de GitHub</button>
     <p id="login-error" class="login-error" role="alert"></p>
+  </div>
+</section>
+
+<!-- CREAR CONTRASEÑA -->
+<section id="v-setpass" class="view hero login" hidden>
+  <div class="hero-shade"></div>
+  <div class="wrap hero-inner">
+    <div class="script hero-kicker">último paso</div>
+    <h1 class="hero-title setpass-title">Crea tu contraseña</h1>
+    <p class="hero-text">Desde ahora entrarás solo con ella, en cualquier computador o celular. Usa al menos 10 caracteres.</p>
+    <form id="setpass-form" class="login-form stack-form">
+      <input type="text" name="username" value="studentnomad" autocomplete="username" hidden>
+      <input id="sp1" type="password" autocomplete="new-password" placeholder="Nueva contraseña" minlength="10" required>
+      <input id="sp2" type="password" autocomplete="new-password" placeholder="Repite la contraseña" minlength="10" required>
+      <button class="btn" type="submit">Guardar contraseña</button>
+    </form>
+    <p id="setpass-error" class="login-error" role="alert"></p>
+    <button class="link-btn light login-switch" id="setpass-skip">Ahora no</button>
   </div>
 </section>
 
@@ -204,7 +229,7 @@
   <footer class="site-footer desk-footer">
     <div class="wrap">
       <div class="script footer-tag">one country at a time</div>
-      <div class="footer-links"><a href="../" target="_blank">Ver blog</a><button class="link-btn light" id="logout">Cerrar sesión</button></div>
+      <div class="footer-links"><a href="../" target="_blank">Ver blog</a><button class="link-btn light" id="change-pass">Cambiar contraseña</button><button class="link-btn light" id="logout">Cerrar sesión</button></div>
     </div>
   </footer>
 </div>

@@ -24,6 +24,33 @@ const pending = new Map(); // dataURL -> { path, base64 }
 const b64ToUtf8 = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, "")), (c) => c.charCodeAt(0)));
 const utf8ToB64 = (str) => { const bytes = new TextEncoder().encode(str); let bin = ""; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(bin); };
 
+/* ---------- contraseña: la llave se guarda cifrada (AES-GCM, clave derivada con PBKDF2) ---------- */
+const ITER = 600000;
+const toB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const fromB64 = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+async function deriveKey(password, salt, iter) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: iter, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+}
+async function lockToken(tok, password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(password, salt, ITER);
+  const data = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(tok));
+  return { v: 1, iter: ITER, salt: toB64(salt), iv: toB64(iv), data: toB64(data) };
+}
+async function unlockToken(vault, password) {
+  const key = await deriveKey(password, fromB64(vault.salt), vault.iter || ITER);
+  try { return new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(vault.iv) }, key, fromB64(vault.data))); }
+  catch (e) { throw new Error("Contraseña incorrecta."); }
+}
+async function loadVault() {
+  if (DEMO) return null;
+  for (const url of [RAW + "/escritorio/llave.json?t=" + Date.now(), "llave.json?t=" + Date.now()]) {
+    try { const r = await fetch(url, { cache: "no-store" }); if (r.ok) return await r.json(); } catch (e) {}
+  }
+  return null;
+}
+
 function parseScalar(v) {
   v = v.trim();
   if (v === "") return "";
@@ -174,8 +201,8 @@ function show(view) {
 }
 
 function route() {
-  if (!token) { $("#v-login").hidden = false; $("#app").hidden = true; return; }
-  $("#v-login").hidden = true; $("#app").hidden = false;
+  if (!token) return showLogin();
+  $("#app").hidden = false;
   const h = decodeURIComponent(location.hash.slice(1)) || "inicio";
   if (h === "nueva") return openPost(null);
   if (h.startsWith("historia/")) return openPost(state.posts.find((p) => p.path === h.slice(9)));
@@ -423,26 +450,61 @@ $("#g-save").addEventListener("click", () => run("Guardando galería…", async 
 }));
 
 /* ---------- sesión ---------- */
+let vault = null;
 async function start() {
   await run("Abriendo tu escritorio…", async () => { await loadAll(); route(); });
 }
+async function showLogin(forceToken) {
+  $("#app").hidden = true; show("login");
+  $("#login-error").textContent = "";
+  if (!forceToken && vault === null) vault = await loadVault();
+  const usePass = !!vault && !forceToken;
+  $("#pass-form").hidden = !usePass; $("#use-token").hidden = !usePass; $("#token-box").hidden = usePass;
+  setTimeout(() => (usePass ? $("#login-pass") : $("#login-token")).focus(), 50);
+}
+async function checkToken(t) {
+  token = t;
+  if (DEMO) return;
+  const repo = await gh("");
+  if (!repo) throw new Error("Esta llave no tiene acceso al blog.");
+  if (repo.permissions && !repo.permissions.push) throw new Error("Esta llave solo puede leer; necesita permiso de escritura.");
+}
+function remember() { try { localStorage.setItem(TOKEN_KEY, token); } catch (err) {} }
+$("#pass-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  busy(true, "Abriendo…");
+  try {
+    const t = await unlockToken(vault, $("#login-pass").value);
+    await checkToken(t); remember(); $("#login-pass").value = ""; busy(false); start();
+  } catch (err) { busy(false); token = null; $("#login-error").textContent = err.message; }
+});
+$("#use-token").addEventListener("click", () => showLogin(true));
 $("#login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const t = $("#login-token").value.trim();
   $("#login-error").textContent = "";
-  token = t;
   try {
-    if (!DEMO) {
-      const repo = await gh("");
-      if (!repo) throw new Error("Esta llave no tiene acceso al blog.");
-      if (repo.permissions && !repo.permissions.push) throw new Error("Esta llave solo puede leer; necesita permiso de escritura.");
-    }
-    try { localStorage.setItem(TOKEN_KEY, t); } catch (err) {}
-    $("#login-token").value = "";
-    start();
+    await checkToken($("#login-token").value.trim()); remember(); $("#login-token").value = "";
+    if (vault === null) vault = await loadVault();
+    if (!vault && !DEMO) { $("#app").hidden = true; show("setpass"); setTimeout(() => $("#sp1").focus(), 50); } else start();
   } catch (err) { token = null; $("#login-error").textContent = err.message; }
 });
-$("#logout").addEventListener("click", () => { try { localStorage.removeItem(TOKEN_KEY); } catch (e) {} token = null; location.hash = ""; route(); });
+$("#setpass-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const a = $("#sp1").value, b = $("#sp2").value;
+  $("#setpass-error").textContent = "";
+  if (a.length < 10) { $("#setpass-error").textContent = "Usa al menos 10 caracteres."; return; }
+  if (a !== b) { $("#setpass-error").textContent = "Las contraseñas no coinciden."; return; }
+  await run("Guardando contraseña…", async () => {
+    const v = await lockToken(token, a);
+    await commit("Escritorio: contraseña actualizada", [{ path: "src/escritorio/llave.json", content: JSON.stringify(v) + "\n" }]);
+    vault = v; $("#sp1").value = $("#sp2").value = "";
+    toast("Contraseña guardada ✓ · desde ahora entras solo con ella");
+    await loadAll(); location.hash = "inicio"; route();
+  });
+});
+$("#setpass-skip").addEventListener("click", () => start());
+$("#change-pass").addEventListener("click", () => { $("#app").hidden = true; show("setpass"); });
+$("#logout").addEventListener("click", () => { try { localStorage.removeItem(TOKEN_KEY); } catch (e) {} token = null; location.hash = ""; showLogin(); });
 
 if (DEMO) {
   token = token || "demo";
