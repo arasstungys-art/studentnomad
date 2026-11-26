@@ -1,3 +1,4 @@
+[hidden] { display: none !important; }
 /* Escritorio: el blog, pero editable */
 .view[hidden], #app[hidden] { display: none !important; }
 .logo small { font-size: 20px; color: var(--ink-soft); font-weight: 500; margin-left: 4px; }
