@@ -3,51 +3,15 @@ layout: layouts/base.njk
 bodyClass: home
 ---
 {% set visitedCount = collections.visited | length %}
-{% set total = world | length %}
-{% set latest = collections.stories | limit(4) %}
-<section class="wrap home-top">
-  <div class="bento">
-    <div class="hero reveal">
-      {% if site.hero_image %}<div class="hero-bg" style="background-image:url('{{ site.hero_image | url }}')"></div>{% endif %}
-      <div class="hero-shade"></div>
-      <div class="hero-inner">
-        <div class="script hero-kicker">{{ site.hero_kicker }}</div>
-        <h1 class="hero-title">{{ site.title }}</h1>
-        <p class="hero-text">{{ site.hero_text }}</p>
-        <div class="hero-actions">
-          <a class="btn" href="/stories/">Read the stories</a>
-          <a class="btn btn-light" href="/map/">See the map</a>
-        </div>
-      </div>
-    </div>
-
-    <a class="tile tile-dark reveal" href="/countries/">
-      <div class="caps">Countries visited</div>
-      <div class="tile-row">
-        <div class="count-big">{{ visitedCount }}<small>/{{ total }}</small></div>
-        {% set circ = 2 * 3.14159 * 40 %}
-        <svg class="ring" viewBox="0 0 92 92" aria-hidden="true"><circle class="bg" cx="46" cy="46" r="40"/><circle class="fg" cx="46" cy="46" r="40" stroke-dasharray="{{ circ }}" stroke-dashoffset="{{ circ }}" data-ring="{{ circ - circ * visitedCount / total }}"/></svg>
-      </div>
-    </a>
-
-    {% if latest | length %}
-      {% set s = latest[0] %}
-      <a class="tile tile-peach reveal" href="{{ s.url }}">
-        <div class="caps">Latest story</div>
-        <div class="tile-row">
-          <div><h3>{{ s.data.title }}</h3><p>{{ s.date | readableDate }}</p></div>
-          <span class="arrow">→</span>
-        </div>
-      </a>
-    {% else %}
-      <a class="tile tile-peach reveal" href="/about/">
-        <div class="caps">Hello there</div>
-        <div class="tile-row">
-          <div><h3>The first story is on its way</h3><p>Meet the traveller</p></div>
-          <span class="arrow">→</span>
-        </div>
-      </a>
-    {% endif %}
+<section class="hero">
+  {% if site.hero_image %}<div class="hero-bg" style="background-image:url('{{ site.hero_image | url }}')"></div>{% endif %}
+  <div class="hero-shade"></div>
+  <div class="wrap hero-inner">
+    <div class="script hero-kicker">{{ site.hero_kicker }}</div>
+    <h1 class="hero-title">{{ site.title }}</h1>
+    <p class="hero-text">{{ site.hero_text }}</p>
+    <a class="btn" href="/stories/">Read the stories</a>
+    <div class="counter"><strong data-count="{{ visitedCount }}">{{ visitedCount }}</strong> of {{ world | length }} countries visited</div>
   </div>
 </section>
 
@@ -59,8 +23,9 @@ bodyClass: home
     </div>
     <a class="link-caps" href="/stories/">All stories →</a>
   </div>
+  {% set latest = collections.stories | limit(3) %}
   {% if latest | length %}
-    <div class="story-grid featured">
+    <div class="story-grid">
       {% for story in latest %}<div class="reveal">{% include "partials/story-card.njk" %}</div>{% endfor %}
     </div>
   {% else %}
@@ -68,31 +33,26 @@ bodyClass: home
   {% endif %}
 </section>
 
-<section class="section wrap">
-  <div class="map-card dark reveal">
-    <div class="map-head">
-      <div><div class="script kicker" style="color:var(--peach)">where I've been</div><h3>The map so far</h3></div>
-      <a class="btn btn-light" href="/map/">Open the map</a>
-    </div>
-    <div id="world-map" class="world-map small" data-theme="dark"></div>
+<section class="section wrap map-teaser">
+  <div class="reveal">
+    <div class="script kicker">where I've been</div>
+    <h2>The map so far</h2>
+    <p class="lead">Every orange patch is a country I've explored. Click one to open its profile.</p>
+    <a class="btn btn-ghost" href="/map/">Open the map</a>
   </div>
+  <div class="map-card reveal"><div id="world-map" class="world-map small"></div></div>
 </section>
 
-{% set feat = collections.visited | featured %}
 <section class="section wrap">
-  <div class="section-head reveal">
-    <div>
-      <div class="script kicker">passport stamps</div>
-      <h2>Featured countries</h2>
-    </div>
-    <a class="link-caps" href="/countries/">All {{ total }} countries →</a>
-  </div>
+  <div class="script kicker">passport stamps</div>
+  <h2>Featured countries</h2>
+  {% set feat = collections.visited | featured %}
   {% if feat | length %}
-    <div class="scroller reveal">
-      {% for c in feat %}{% include "partials/country-card.njk" %}{% endfor %}
+    <div class="country-grid">
+      {% for c in feat %}<div class="reveal">{% include "partials/country-card.njk" %}</div>{% endfor %}
     </div>
   {% else %}
-    <div class="empty reveal">No stamps yet — the journey is just starting.</div>
+    <div class="empty reveal">No stamps yet — the journey is just starting. <a href="/countries/">See all {{ world | length }} countries.</a></div>
   {% endif %}
 </section>
 

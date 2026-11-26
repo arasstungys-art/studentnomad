@@ -3,20 +3,19 @@ layout: layouts/base.njk
 ---
 <div class="progress-bar" id="read-progress"></div>
 <article>
-  <div class="hero-wrap">
-    <header class="page-hero" {% if cover %}style="background-image:url('{{ cover | url }}')"{% endif %}>
-      <div class="wrap narrow page-hero-inner">
-        {% if country %}<a class="pill pill-light" href="/countries/{{ country }}/">{{ country | flag }} {{ country | countryName(world) }}</a>{% endif %}
-        <h1>{{ title }}</h1>
-        <div class="meta light">{{ page.date | readableDate }} · {{ content | readingTime }}</div>
-      </div>
-    </header>
-  </div>
+  <header class="page-hero" {% if cover %}style="background-image:url('{{ cover | url }}')"{% endif %}>
+    <div class="hero-shade"></div>
+    <div class="wrap narrow page-hero-inner">
+      {% if country %}<a class="pill pill-light" href="/countries/{{ country }}/">{{ country | flag }} {{ country | countryName(world) }}</a>{% endif %}
+      <h1>{{ title }}</h1>
+      <div class="meta light">{{ page.date | readableDate }} · {{ content | readingTime }}</div>
+    </div>
+  </header>
 
   <div class="wrap narrow">
     <div class="byline">
       <img src="/assets/img/logo.svg" alt="">
-      <div><b>{{ site.title }}</b><span>{{ site.footer_tagline }}</span></div>
+      <div><b>{{ site.title }}</b><span class="script">{{ site.footer_tagline }}</span></div>
       <button class="btn btn-ghost share-btn" id="share" type="button">Share ↗</button>
     </div>
   </div>
@@ -35,8 +34,8 @@ layout: layouts/base.njk
   <nav class="wrap narrow post-nav">
     {% set prev = collections.stories | getPreviousCollectionItem(page) %}
     {% set next = collections.stories | getNextCollectionItem(page) %}
-    {% if next %}<a href="{{ next.url }}"><span class="script">← older</span>{{ next.data.title }}</a>{% endif %}
-    {% if prev %}<a class="right" href="{{ prev.url }}"><span class="script">newer →</span>{{ prev.data.title }}</a>{% endif %}
+    {% if next %}<a href="{{ next.url }}"><span class="script">older</span>{{ next.data.title }}</a>{% else %}<span></span>{% endif %}
+    {% if prev %}<a class="right" href="{{ prev.url }}"><span class="script">newer</span>{{ prev.data.title }}</a>{% endif %}
   </nav>
 </article>
 <script>
@@ -46,8 +45,7 @@ layout: layouts/base.njk
     const upd = () => { const r = art.getBoundingClientRect(); const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight))); bar.style.width = (p * 100) + '%'; };
     addEventListener('scroll', upd, { passive: true }); upd();
     document.getElementById('share').addEventListener('click', async (e) => {
-      const data = { title: document.title, url: location.href };
-      try { if (navigator.share) await navigator.share(data); else { await navigator.clipboard.writeText(location.href); e.target.textContent = 'Link copied ✓'; } } catch (err) {}
+      try { if (navigator.share) await navigator.share({ title: document.title, url: location.href }); else { await navigator.clipboard.writeText(location.href); e.target.textContent = 'Link copied ✓'; } } catch (err) {}
     });
   }
 </script>

@@ -15,12 +15,14 @@ export default function (eleventyConfig) {
     "node_modules/jsvectormap/dist/jsvectormap.min.js": "assets/vendor/jsvectormap/jsvectormap.min.js",
     "node_modules/jsvectormap/dist/jsvectormap.min.css": "assets/vendor/jsvectormap/jsvectormap.min.css",
     "node_modules/jsvectormap/dist/maps/world.js": "assets/vendor/jsvectormap/world.js",
-    "node_modules/@fontsource-variable/bricolage-grotesque/index.css": "assets/vendor/fonts/bricolage/index.css",
-    "node_modules/@fontsource-variable/bricolage-grotesque/files": "assets/vendor/fonts/bricolage/files",
-    "node_modules/@fontsource-variable/inter/index.css": "assets/vendor/fonts/inter/index.css",
-    "node_modules/@fontsource-variable/inter/files": "assets/vendor/fonts/inter/files",
+    "node_modules/@fontsource-variable/fraunces/index.css": "assets/vendor/fonts/fraunces/index.css",
+    "node_modules/@fontsource-variable/fraunces/files": "assets/vendor/fonts/fraunces/files",
+    "node_modules/@fontsource/karla/files": "assets/vendor/fonts/karla/files",
     "node_modules/@fontsource/caveat/files": "assets/vendor/fonts/caveat/files",
   });
+  for (const w of ["400", "500", "600", "700"]) {
+    eleventyConfig.addPassthroughCopy({ [`node_modules/@fontsource/karla/${w}.css`]: `assets/vendor/fonts/karla/${w}.css` });
+  }
   eleventyConfig.addPassthroughCopy({ "node_modules/@fontsource/caveat/500.css": "assets/vendor/fonts/caveat/500.css" });
 
   // Collections

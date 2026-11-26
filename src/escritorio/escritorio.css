@@ -54,7 +54,7 @@
 
 /* Portadas editables */
 .editable-hero { background-size: cover !important; background-position: center !important; }
-.editable-hero.page-hero, .editable-hero.hero { width: min(1200px, 100% - 32px); margin: 14px auto 0; }
+.editable-hero.page-hero { margin-top: 14px; }
 #v-portada .editable-hero.hero { min-height: 560px; }
 .cover-pick { position: absolute; z-index: 3; top: 16px; right: 16px; cursor: pointer; }
 .cover-pick span { display: inline-block; background: rgba(255,250,242,.94); color: var(--ink); font-weight: 700; font-size: 14px; padding: 10px 16px; border-radius: 99px; box-shadow: var(--shadow-sm); transition: transform .2s var(--ease); }

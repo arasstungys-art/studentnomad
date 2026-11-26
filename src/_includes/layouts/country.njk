@@ -1,16 +1,14 @@
 ---
 layout: layouts/base.njk
 ---
-{% set related = collections.stories | byCountry(code) %}
-<div class="hero-wrap">
-  <header class="page-hero tall" {% if cover %}style="background-image:url('{{ cover | url }}')"{% endif %}>
-    <div class="wrap page-hero-inner">
-      <div class="big-flag">{{ code | flag }}</div>
-      <h1>{{ name }}</h1>
-      <div class="meta light">{{ continent }}</div>
-    </div>
-  </header>
-</div>
+<header class="page-hero tall" {% if cover %}style="background-image:url('{{ cover | url }}')"{% endif %}>
+  <div class="hero-shade"></div>
+  <div class="wrap page-hero-inner">
+    <div class="big-flag">{{ code | flag }}</div>
+    <h1>{{ name }}</h1>
+    <div class="meta light">{{ continent }}</div>
+  </div>
+</header>
 
 <section class="wrap country-facts">
   {% if rating %}
@@ -27,10 +25,6 @@ layout: layouts/base.njk
     <ul class="cities">{% for city in cities %}<li>{{ city }}</li>{% endfor %}</ul>
   </div>
   {% endif %}
-  <div class="fact reveal">
-    <div class="caps">Stories</div>
-    <div class="fact-value">{{ related | length }}</div>
-  </div>
   {% if visited_on %}
   <div class="fact reveal">
     <div class="caps">First visit</div>
@@ -43,8 +37,10 @@ layout: layouts/base.njk
 <div class="wrap narrow prose">{{ content | safe }}</div>
 {% endif %}
 
+{% set related = collections.stories | byCountry(code) %}
 <section class="section wrap">
-  <div class="section-head reveal"><div><div class="script kicker">from {{ name }}</div><h2>Stories</h2></div></div>
+  <div class="script kicker">from {{ name }}</div>
+  <h2>Stories</h2>
   {% if related | length %}
     <div class="story-grid">{% for story in related %}<div class="reveal">{% include "partials/story-card.njk" %}</div>{% endfor %}</div>
   {% else %}

@@ -1,6 +1,7 @@
 <a class="story-card" href="{{ story.url }}">
-  {% if story.data.cover %}<div class="story-cover" style="background-image:url('{{ story.data.cover | url }}')"></div>{% endif %}
-  {% if story.data.country %}<span class="pill">{{ story.data.country | flag }} {{ story.data.country | countryName(world) }}</span>{% endif %}
+  <div class="story-cover" {% if story.data.cover %}style="background-image:url('{{ story.data.cover | url }}')"{% endif %}>
+    {% if story.data.country %}<span class="pill">{{ story.data.country | flag }} {{ story.data.country | countryName(world) }}</span>{% endif %}
+  </div>
   <div class="story-body">
     <div class="meta">{{ story.date | readableDate }} · {{ story.content | readingTime }}</div>
     <h3>{{ story.data.title }}</h3>
