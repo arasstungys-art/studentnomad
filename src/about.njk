@@ -3,39 +3,44 @@ layout: layouts/base.njk
 title: About & contact
 permalink: /about/
 ---
-<section class="section wrap narrow page-top">
+<section class="section wrap page-top">
   <div class="script kicker">{{ site.about_kicker }}</div>
   <h1 class="page-title">{{ site.about_title }}</h1>
-  {% if site.about_image %}<img class="about-img" src="{{ site.about_image }}" alt="">{% endif %}
-  <div class="prose flush">
-    {% for para in site.about_text.split('\n\n') %}<p>{{ para }}</p>{% endfor %}
-  </div>
-</section>
-
-<section class="section wrap narrow" id="contact">
-  <div class="card">
-    <h2>Say hi</h2>
-    <p class="lead">Tips, questions or travel buddy offers — all welcome.</p>
-    {% if site.formspree_id %}
-      <form class="form" action="https://formspree.io/f/{{ site.formspree_id }}" method="POST">
-    {% else %}
-      <form class="form" id="mailto-form" data-email="{{ site.contact_email }}">
-    {% endif %}
-        <label>Name<input name="name" required></label>
-        <label>Email<input name="email" type="email" required></label>
-        <label>Message<textarea name="message" rows="5" required></textarea></label>
-        <button class="btn" type="submit">Send message</button>
-      </form>
+  <div class="about-grid">
+    <div class="card reveal">
+      {% if site.about_image %}<img class="about-img" src="{{ site.about_image }}" alt="" style="margin-bottom:20px">{% endif %}
+      <div class="prose flush">
+        {% for para in site.about_text.split('\n\n') %}<p>{{ para }}</p>{% endfor %}
+      </div>
+      <a class="btn" href="/stories/" style="margin-top:10px">Read the stories</a>
+    </div>
+    <div class="card reveal" id="contact">
+      <h2>Say hi 👋</h2>
+      <p class="lead">Tips, questions or travel buddy offers — all welcome.</p>
+      {% if site.formspree_id %}
+        <form class="form" action="https://formspree.io/f/{{ site.formspree_id }}" method="POST">
+      {% else %}
+        <form class="form" id="mailto-form" data-email="{{ site.contact_email }}">
+      {% endif %}
+          <label>Name<input name="name" required></label>
+          <label>Email<input name="email" type="email" required></label>
+          <label>Message<textarea name="message" rows="5" required></textarea></label>
+          <button class="btn" type="submit">Send message</button>
+          <p class="meta" id="form-note"></p>
+        </form>
+    </div>
   </div>
 </section>
 <script>
-  var f = document.getElementById('mailto-form');
-  if (f) f.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var to = f.dataset.email;
-    if (!to) { alert('Contact form not configured yet.'); return; }
-    var d = new FormData(f);
-    location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('Hello from ' + d.get('name')) +
-      '&body=' + encodeURIComponent(d.get('message') + '\n\n— ' + d.get('name') + ' (' + d.get('email') + ')');
-  });
+  {
+    const f = document.getElementById('mailto-form');
+    if (f) f.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const to = f.dataset.email;
+      if (!to) { document.getElementById('form-note').textContent = 'The contact form is not set up yet.'; return; }
+      const d = new FormData(f);
+      location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('Hello from ' + d.get('name')) +
+        '&body=' + encodeURIComponent(d.get('message') + '\n\n— ' + d.get('name') + ' (' + d.get('email') + ')');
+    });
+  }
 </script>

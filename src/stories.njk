@@ -19,7 +19,7 @@ permalink: /stories/
     {% endif %}
     <div class="story-grid">
       {% for story in collections.stories %}
-        <div class="story-wrap" data-country="{{ story.data.country }}">{% include "partials/story-card.njk" %}</div>
+        <div class="story-wrap reveal" data-country="{{ story.data.country }}">{% include "partials/story-card.njk" %}</div>
       {% endfor %}
     </div>
   {% else %}

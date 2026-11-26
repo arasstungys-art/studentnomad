@@ -195,7 +195,7 @@ const countryName = (code) => (state.world.find((c) => c.code === code) || {}).n
 function show(view) {
   $$(".view").forEach((v) => (v.hidden = v.id !== "v-" + view));
   const tab = { historia: "inicio", pais: "paises" }[view] || view;
-  $$(".desk-nav a[data-tab]").forEach((a) => a.classList.toggle("active", a.dataset.tab === tab));
+  $$(".desk-nav a[data-tab], .desk-tabbar a[data-tab]").forEach((a) => a.classList.toggle("active", a.dataset.tab === tab));
   document.body.classList.remove("nav-open");
   window.scrollTo(0, 0);
 }
@@ -236,9 +236,8 @@ function renderHome() {
   $("#st-posts").textContent = state.posts.length;
   $("#st-countries").textContent = state.countries.length;
   $("#st-photos").textContent = state.gallery.photos.length + state.posts.filter((p) => p.data.cover).length;
-  $("#profile-bio").textContent = state.site.hero_text || "";
   const g = $("#post-grid");
-  g.innerHTML = '<button class="ig-tile ig-new" data-go="nueva"><div><span>+</span>Nueva historia</div></button>' +
+  g.innerHTML = (state.posts.length ? "" : '<div class="empty empty-grid">Todavía no hay historias. ¡Escribe la primera! ✈</div>') +
     state.posts.map((p) => '<button class="ig-tile" data-go="historia/' + esc(encodeURIComponent(p.path)) + '"' + (p.data.cover ? ' style="background-image:url(\'' + esc(imgUrl(p.data.cover)) + '\')"' : "") + ">" +
       (p.data.country ? '<span class="f">' + flag(p.data.country) + "</span>" : "") +
       (p.data.draft ? '<span class="d">Borrador</span>' : "") +

@@ -6,8 +6,9 @@
   var values = {};
   visited.forEach(function (c) { values[c] = 1; });
 
-  var accent = "#c8643c";
-  var land = "#e6d6bd";
+  var dark = el.dataset.theme === "dark";
+  var accent = dark ? "#f4b9a0" : "#d9643a";
+  var land = dark ? "#3b5a4a" : "#e7dccb";
 
   var map = new jsVectorMap({
     selector: "#world-map",
@@ -16,8 +17,8 @@
     zoomOnScroll: false,
     backgroundColor: "transparent",
     regionStyle: {
-      initial: { fill: land, stroke: "#f6efe3", strokeWidth: 0.5, fillOpacity: 1 },
-      hover: { fill: "#d9a07f", cursor: "pointer" },
+      initial: { fill: land, stroke: dark ? "#1f3b2d" : "#fbf6ee", strokeWidth: 0.5, fillOpacity: 1 },
+      hover: { fill: dark ? "#d9643a" : "#e9a17f", cursor: "pointer" },
       selected: { fill: accent }
     },
     selectedRegions: visited,

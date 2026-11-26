@@ -12,14 +12,23 @@ permalink: /gallery/
     <div class="gallery">
       {% for it in items %}
         <figure>
-          {% if it.link %}<a href="{{ it.link }}">{% endif %}
           <img src="{{ it.image }}" alt="{{ it.caption }}" loading="lazy" onerror="this.closest('figure').remove()">
-          {% if it.link %}</a>{% endif %}
           {% if it.caption %}<figcaption>{{ it.caption }}</figcaption>{% endif %}
         </figure>
       {% endfor %}
     </div>
+      <div class="lightbox" id="lightbox" hidden><img alt=""></div>
   {% else %}
     <div class="empty">No photos yet — the camera roll is filling up.</div>
   {% endif %}
 </section>
+<script>
+  {
+    const lb = document.getElementById('lightbox');
+    if (lb) {
+      document.querySelectorAll('.gallery img').forEach((img) => img.addEventListener('click', () => { lb.querySelector('img').src = img.src; lb.hidden = false; }));
+      lb.addEventListener('click', () => (lb.hidden = true));
+      addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.hidden = true; });
+    }
+  }
+</script>

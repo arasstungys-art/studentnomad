@@ -2,34 +2,28 @@
 <html lang="en" data-base="{{ '/' | url }}">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fbf6ee">
   <title>{% if title %}{{ title }} — {{ site.title }}{% else %}{{ site.title }} — a student's travel journal{% endif %}</title>
   <meta name="description" content="{{ excerpt or site.description }}">
   <meta property="og:title" content="{{ title or site.title }}">
   <meta property="og:description" content="{{ excerpt or site.description }}">
-  {% if cover %}<meta property="og:image" content="{{ cover }}">{% endif %}
-  <link rel="stylesheet" href="/assets/vendor/fonts/fraunces/index.css">
-  <link rel="stylesheet" href="/assets/vendor/fonts/karla/400.css">
-  <link rel="stylesheet" href="/assets/vendor/fonts/karla/500.css">
-  <link rel="stylesheet" href="/assets/vendor/fonts/karla/600.css">
-  <link rel="stylesheet" href="/assets/vendor/fonts/karla/700.css">
+  {% if cover %}<meta property="og:image" content="{{ cover }}">{% elif site.hero_image %}<meta property="og:image" content="{{ site.hero_image }}">{% endif %}
+  <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/vendor/fonts/bricolage/index.css">
+  <link rel="stylesheet" href="/assets/vendor/fonts/inter/index.css">
   <link rel="stylesheet" href="/assets/vendor/fonts/caveat/500.css">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/feed.xml">
-  {% block head %}{% endblock %}
 </head>
 <body class="{{ bodyClass }}">
+  {% set nav = [["/", "Home", "M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"], ["/stories/", "Stories", "M5 4h11l3 3v13H5zM9 10h6M9 14h6"], ["/map/", "Map", "M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"], ["/countries/", "Countries", "M5 21V4M5 4h12l-2 4 2 4H5"], ["/about/", "About", "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0"]] %}
   <header class="site-header">
     <div class="wrap header-inner">
-      <a class="logo" href="/">student<span>nomad</span></a>
-      <button class="menu-toggle" aria-label="Menu" aria-expanded="false" onclick="document.body.classList.toggle('nav-open');this.setAttribute('aria-expanded',document.body.classList.contains('nav-open'))">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
+      <a class="logo" href="/"><i class="dot"></i><b>student<span>nomad</span></b></a>
       <nav class="main-nav">
-        {% set nav = [["/", "Home"], ["/stories/", "Stories"], ["/countries/", "Countries"], ["/map/", "Map"], ["/gallery/", "Gallery"], ["/about/", "About"]] %}
-        {% for item in nav %}
-          <a href="{{ item[0] }}" {% if page.url == item[0] or (item[0] != '/' and page.url.startsWith(item[0])) %}class="active" aria-current="page"{% endif %}>{{ item[1] }}</a>
-        {% endfor %}
+        {% for item in nav %}<a href="{{ item[0] }}" {% if page.url == item[0] or (item[0] != '/' and page.url.startsWith(item[0])) %}class="active" aria-current="page"{% endif %}>{{ item[1] }}</a>{% endfor %}
+        <a href="/gallery/" {% if page.url.startsWith('/gallery/') %}class="active"{% endif %}>Gallery</a>
       </nav>
     </div>
   </header>
@@ -43,10 +37,25 @@
       <div class="footer-title">{{ site.title }}</div>
       <div class="script footer-tag">{{ site.footer_tagline }}</div>
       <div class="footer-links">
-        <a href="/about/#contact">Contact</a>
+        <a href="/stories/">Stories</a><a href="/map/">Map</a><a href="/gallery/">Gallery</a><a href="/about/#contact">Contact</a><a href="/feed.xml">RSS</a>
       </div>
     </div>
   </footer>
-  {% block scripts %}{% endblock %}
+
+  <nav class="tabbar" aria-label="Main">
+    {% for item in nav %}
+      <a href="{{ item[0] }}" {% if page.url == item[0] or (item[0] != '/' and page.url.startsWith(item[0])) %}class="active" aria-current="page"{% endif %}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item[2] }}"/></svg>{{ item[1] }}
+      </a>
+    {% endfor %}
+  </nav>
+
+  <script>
+    {
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+      document.querySelectorAll('[data-ring]').forEach((c) => requestAnimationFrame(() => setTimeout(() => (c.style.strokeDashoffset = c.dataset.ring), 300)));
+    }
+  </script>
 </body>
 </html>

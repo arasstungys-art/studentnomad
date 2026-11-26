@@ -1,0 +1,15 @@
+{
+  "framework": null,
+  "installCommand": "npm install",
+  "buildCommand": "npx @11ty/eleventy",
+  "outputDirectory": "_site",
+  "headers": [
+    {
+      "source": "/escritorio/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" },
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    }
+  ]
+}
