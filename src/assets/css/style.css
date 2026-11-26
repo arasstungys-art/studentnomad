@@ -1,3 +1,5 @@
+[hidden] { display: none !important; }
+.gallery:not(:has(figure))::after { content: "No photos yet — the camera roll is filling up."; display: block; column-span: all; border: 1.5px dashed var(--line); border-radius: 14px; padding: 48px 24px; text-align: center; color: var(--muted); }
 @view-transition { navigation: auto; }
 /* studentnomad — warm paper, forest green, terracotta */
 :root {
