@@ -1,14 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>Escritorio — studentnomad</title>
   <meta name="referrer" content="no-referrer">
+  <title>Escritorio — studentnomad</title>
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
 </head>
 <body>
-  <!-- Sveltia CMS: a Git-based editor. Posts are saved as Markdown files in this GitHub repo. -->
+  <!-- Sveltia CMS: los posts se guardan como Markdown en este repositorio de GitHub. -->
   <script src="https://unpkg.com/@sveltia/cms@0/dist/sveltia-cms.js"></script>
+  <script>
+    // La vista previa del editor usa la tipografía y colores del blog.
+    CMS.registerPreviewStyle("../assets/css/cms-preview.css");
+  </script>
 </body>
 </html>

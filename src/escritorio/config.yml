@@ -1,3 +1,6 @@
+app_title: Escritorio · studentnomad
+logo_url: https://arasstungys-art.github.io/studentnomad/assets/img/logo.svg
+
 # Panel de administración (Sveltia CMS)
 # Cada vez que guardas, se hace un commit en GitHub y el sitio se vuelve a publicar solo (1–2 min).
 backend:
